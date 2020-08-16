@@ -1,0 +1,26 @@
+{
+  "name": "temperature",
+  "version": "1.0.0",
+  "description": "Node server for showing indoor temperature with Raspberry Pi",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js",
+    "dev-start": "nodemon index.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/aleksivaisanen/node-temperature.git"
+  },
+  "author": "Aleksi Väisänen",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/aleksivaisanen/node-temperature/issues"
+  },
+  "homepage": "https://github.com/aleksivaisanen/node-temperature#readme",
+  "dependencies": {
+    "express": "^4.17.1"
+  },
+  "devDependencies": {
+    "nodemon": "^2.0.4"
+  }
+}
