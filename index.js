@@ -3,11 +3,12 @@ const path = require('path');
 const fs = require('fs');
 
 const app = express();
-const devicesLocation = '/sys/bus/w1/devices'; 
+const devicesLocation = '/sys/bus/w1/devices';
 
-const sensor = () => {
+function sensor() {
     // get sensor from filesystem
     fs.readdir(devicesLocation, (err, files) => {
+        console.log("files", files)
         files.forEach(file => {
             if (file != 'w1_bus_master1') {
                 const ds18b20 = file;
@@ -17,15 +18,18 @@ const sensor = () => {
     })
 }
 
-const readSensor = () => {
-    const location = devicesLocation + sensor + '/w1_slave';
+function readSensor() {
+    const location = devicesLocation + sensor() + '/w1_slave';
     fs.readFile(location, data => {
+        console.log("readfile data", data)
         const secondline = data.split("\n")[1];
         const temperatureData = secondline.split(" ")[9];
+        console.log("temperatureData", temperatureData)
         const temperature = parseFloat(temperatureData.substring(2));
-        const celcius = temperature/1000;
+        const celcius = temperature / 1000;
         return celcius.toFixed(1);
     })
+    return undefined
 }
 
 // Set static folder
@@ -37,7 +41,9 @@ app.get('/', (req, res) => {
 
 app.get('/temperature', (req, res) => {
     try {
-        res.json({ temperature: readSensor });
+        const temperatureValue = readSensor()
+        console.log('temperatureValue', temperatureValue)
+        res.json({ 'temperature': temperatureValue });
     }
     catch (err) {
         err => res.status(404).json({ success: false });
