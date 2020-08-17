@@ -1,6 +1,7 @@
 const express = require('express');
 const path = require('path');
 const fs = require('fs');
+const http = require('http');
 
 const app = express();
 const devicesLocation = '/sys/bus/w1/devices/';
@@ -60,4 +61,6 @@ app.get('/temperature', (req, res) => {
 
 const port = process.env.PORT || 5000;
 
-app.listen(port, () => console.log(`Server started on port ${port}`));
+http.createServer(app).listen(port, () => {
+    console.log('Server started on port ' + port)
+})
