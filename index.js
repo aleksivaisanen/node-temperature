@@ -7,7 +7,6 @@ const app = express();
 const devicesLocation = '/sys/bus/w1/devices/';
 
 async function sensor() {
-    let ds18b20 = null
     // get sensor from filesystem
     fsPromises.readdir(devicesLocation, (err, files) => {
         console.log("files", files)
@@ -19,14 +18,14 @@ async function sensor() {
                 return ds18b20;
             }
         }
-    }).catch(err => console.error('Error occured while reading directory!', err))
-    console.log('ds18b20', ds18b20)
-    return ds18b20;
+    })
+    .catch(err => console.error('Error occured while reading directory!', err))
 }
 
 function readSensor() {
     sensor()
         .then(result => {
+            console.log("sensor() result", result)
             const sensorData = result;
             const location = devicesLocation + sensorData + '/w1_slave';
             let celcius = null
