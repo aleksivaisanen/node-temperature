@@ -17,4 +17,5 @@ const fetchTemperature = () => {
         })
 }
 
+fetchTemperature();
 setInterval(fetchTemperature, 60000);
