@@ -30,7 +30,7 @@ async function sensor() {
 
 function readSensor() {
     console.log("sensor()", sensor())
-    const sensorData = await sensor();
+    const sensorData = sensor();
     const location = devicesLocation + sensorData + '/w1_slave';
     let celcius = null
     try {
