@@ -11,11 +11,13 @@ function sensor() {
     fs.readdir(devicesLocation, (err, files) => {
         console.log("files", files)
         for (const file of files) {
+            console.log("file", file)
             if (file != 'w1_bus_master1') {
                 ds18b20 = file;
             }
         }
     })
+    console.log('ds18b20', ds18b20)
     return ds18b20;
 }
 
