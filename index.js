@@ -34,7 +34,7 @@ function readSensor() {
                 const sensorData = result;
                 const location = devicesLocation + sensorData + '/w1_slave';
 
-                fs.readFile(location, function (err, data) {
+                fs.readFile(location, 'utf8', function (err, data) {
                     if (err) {
                         console.error("Reading file failed, error:", err)
                         reject(err)
