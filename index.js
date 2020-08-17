@@ -1,49 +1,56 @@
 const express = require('express');
 const path = require('path');
 const fs = require('fs');
-const fsPromises = fs.promises;
 
 const app = express();
 const devicesLocation = '/sys/bus/w1/devices/';
 
-async function sensor() {
+function sensor() {
     // get sensor from filesystem
-    fsPromises.readdir(devicesLocation, (err, files) => {
-        console.log("files", files)
-        for (const file of files) {
-            console.log("file", file)
-            if (file !== 'w1_bus_master1') {
-                ds18b20 = file;
-                console.log(ds18b20)
-                return ds18b20;
+    return new Promise((resolve, reject) => {
+        fs.readdir(devicesLocation, function (err, files) {
+            if (err) {
+                console.error('Error occured while reading directory!', err)
+                reject(err)
             }
-        }
+            console.log("files", files)
+            for (const file of files) {
+                console.log("file", file)
+                if (file !== 'w1_bus_master1') {
+                    ds18b20 = file;
+                    console.log(ds18b20)
+                    resolve(ds18b20);
+                }
+            }
+        })
     })
-        .catch(err => console.error('Error occured while reading directory!', err))
 }
 
 function readSensor() {
-    sensor()
-        .then(result => {
-            console.log("sensor() result", result)
-            const sensorData = result;
-            const location = devicesLocation + sensorData + '/w1_slave';
-            let celcius = null
+    return new Promise((resolve, reject) => {
+        sensor()
+            .then(result => {
+                console.log("sensor() result", result)
+                const sensorData = result;
+                const location = devicesLocation + sensorData + '/w1_slave';
 
-            fsPromises.readFile(location, data => {
-                console.log("readfile data", data)
-                const secondline = data.split("\n")[1];
-                const temperatureData = secondline.split(" ")[9];
-                console.log("temperatureData", temperatureData)
-                const temperature = parseFloat(temperatureData.substring(2));
-                celcius = temperature / 1000;
-                celcius = celcius.toFixed(1);
-                return celcius;
+                fs.readFile(location, function (err, data) {
+                    if (err) {
+                        console.error("Reading file failed, error:", err)
+                        reject(err)
+                    }
+
+                    console.log("readfile data", data)
+                    const secondline = data.split("\n")[1];
+                    const temperatureData = secondline.split(" ")[9];
+                    console.log("temperatureData", temperatureData)
+                    const temperature = parseFloat(temperatureData.substring(2));
+                    celcius = temperature / 1000;
+                    celcius = celcius.toFixed(1);
+                    resolve(celcius)
+                })
             })
-                .catch(err => console.error("Reading file failed, error:", err))
-
-            return celcius
-        })
+    })
 }
 
 // Set static folder
