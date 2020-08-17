@@ -3,33 +3,35 @@ const path = require('path');
 const fs = require('fs');
 
 const app = express();
-const devicesLocation = '/sys/bus/w1/devices';
+const devicesLocation = '/sys/bus/w1/devices/';
 
 function sensor() {
+    let ds18b20 = null
     // get sensor from filesystem
     fs.readdir(devicesLocation, (err, files) => {
         console.log("files", files)
-        files.forEach(file => {
+        for (const file of files) {
             if (file != 'w1_bus_master1') {
-                const ds18b20 = file;
-                return ds18b20;
+                ds18b20 = file;
             }
-        })
+        }
     })
+    return ds18b20;
 }
 
 function readSensor() {
     const location = devicesLocation + sensor() + '/w1_slave';
+    let celcius = null
     fs.readFile(location, data => {
         console.log("readfile data", data)
         const secondline = data.split("\n")[1];
         const temperatureData = secondline.split(" ")[9];
         console.log("temperatureData", temperatureData)
         const temperature = parseFloat(temperatureData.substring(2));
-        const celcius = temperature / 1000;
-        return celcius.toFixed(1);
+        celcius = temperature / 1000;
+        celcius = celcius.toFixed(1);
     })
-    return undefined
+    return celcius
 }
 
 // Set static folder
