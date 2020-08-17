@@ -13,13 +13,9 @@ function sensor() {
                 console.error('Error occured while reading directory!', err)
                 reject(err)
             }
-            console.log("files", files)
             for (const file of files) {
-                console.log("file", file)
                 if (file !== 'w1_bus_master1') {
-                    ds18b20 = file;
-                    console.log(ds18b20)
-                    resolve(ds18b20);
+                    resolve(file);
                 }
             }
         })
@@ -30,7 +26,6 @@ function readSensor() {
     return new Promise((resolve, reject) => {
         sensor()
             .then(result => {
-                console.log("sensor() result", result)
                 const sensorData = result;
                 const location = devicesLocation + sensorData + '/w1_slave';
 
@@ -39,11 +34,8 @@ function readSensor() {
                         console.error("Reading file failed, error:", err)
                         reject(err)
                     }
-
-                    console.log("readfile data", data)
                     const secondline = data.split("\n")[1];
                     const temperatureData = secondline.split(" ")[9];
-                    console.log("temperatureData", temperatureData)
                     const temperature = parseFloat(temperatureData.substring(2));
                     celcius = temperature / 1000;
                     celcius = celcius.toFixed(1);
