@@ -19,7 +19,7 @@ async function sensor() {
             }
         }
     })
-    .catch(err => console.error('Error occured while reading directory!', err))
+        .catch(err => console.error('Error occured while reading directory!', err))
 }
 
 function readSensor() {
@@ -40,7 +40,7 @@ function readSensor() {
                 celcius = celcius.toFixed(1);
                 return celcius;
             })
-            .catch(err => console.error("Reading file failed, error:", err))
+                .catch(err => console.error("Reading file failed, error:", err))
 
             return celcius
         })
@@ -54,14 +54,9 @@ app.get('/', (req, res) => {
 });
 
 app.get('/temperature', (req, res) => {
-    try {
-        const temperatureValue = readSensor()
-        console.log('temperatureValue', temperatureValue)
-        res.json({ 'temperature': temperatureValue });
-    }
-    catch (err) {
-        err => res.status(404).json({ success: false });
-    }
+    readSensor()
+        .then(result => res.json({ 'temperature': result }))
+        .catch(err => res.status(404).json({ success: false }))
 })
 
 const port = process.env.PORT || 5000;
