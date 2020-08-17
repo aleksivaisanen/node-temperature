@@ -12,8 +12,10 @@ function sensor() {
         console.log("files", files)
         for (const file of files) {
             console.log("file", file)
-            if (file != 'w1_bus_master1') {
+            if (file !== 'w1_bus_master1') {
                 ds18b20 = file;
+                console.log(ds18b20)
+                return ds18b20;
             }
         }
     })
@@ -22,6 +24,7 @@ function sensor() {
 }
 
 function readSensor() {
+    console.log("sensor()", sensor())
     const location = devicesLocation + sensor() + '/w1_slave';
     let celcius = null
     fs.readFile(location, data => {
